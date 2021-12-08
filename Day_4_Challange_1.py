@@ -1,5 +1,11 @@
 from typing import List
 
+"""
+Creator: Przemysław Szewczak
+Date: 06.12.2021
+Source: https://adventofcode.com/2021/day/4
+"""
+
 
 class Board:
     def __init__(self, row_list: List[List[int]]):
@@ -24,7 +30,7 @@ class Board:
         If yes returning True and printing sum of unmarked numbers times last drawn number
         If no returning False, and another board is checking.
         """
-        bingo_value = [0, 0, 0, 0, 0, 0, 0, 0]
+        bingo_value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in drawn_numbers:
             if i in self.rows[0]:
                 bingo_value[0] += 1
@@ -38,31 +44,40 @@ class Board:
             if i in self.rows[3]:
                 bingo_value[3] += 1
 
-            if i in self.columns[4]:
+            if i in self.rows[4]:
                 bingo_value[4] += 1
 
             if i in self.columns[0]:
                 bingo_value[5] += 1
 
-            if i in self.columns[0]:
+            if i in self.columns[1]:
                 bingo_value[6] += 1
 
-            if i in self.columns[0]:
+            if i in self.columns[2]:
                 bingo_value[7] += 1
 
-        if 5 in bingo_value:
-            print(f'Bingo: {self.sum_not_typed(drawn_numbers)}')
-            return True
-        else:
-            return False
-    def sum_not_typed(self,drawn_numbers: List[int]):
+            if i in self.columns[3]:
+                bingo_value[8] += 1
+
+            if i in self.columns[4]:
+                bingo_value[9] += 1
+        for i in bingo_value:
+            if i >= 5:
+                self.finished = True
+                print(f'Bingo: {self.sum_not_typed(drawn_numbers)}')
+                return True
+            else:
+                continue
+
+    def sum_not_typed(self, drawn_numbers: List[int]):
         """Method summing and returning value if Bingo occurred"""
         sum_not = 0
         for row in self.rows:
             for val in row:
                 if val not in drawn_numbers:
-                    sum_not+=val
+                    sum_not += val
         return sum_not * drawn_numbers[-1]
+
 
 class DrawnNumbers:
     """Class for numbers that will return numbers which takes part in Bingo game"""
@@ -101,7 +116,6 @@ def create_boards() -> List[Board]:
                 """Skipping gap line, removing '' from rows, creating Board object,
                  saving them and preparing list for another board"""
                 file.readline()
-                # Here will be object creation
                 for i in board_rows:
                     if '' in i:
                         i.remove('')
@@ -116,10 +130,8 @@ def create_boards() -> List[Board]:
 
                 board_rows = []
                 continue
-        # print(board_list[0])
-        # print(board_list[0].columns)
         return board_list
-        # print(board_list[0].columns)
+
     pass
 
 
