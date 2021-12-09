@@ -1,19 +1,20 @@
-from typing import List
+from typing import List,Dict
+from math import sqrt
 
 
 class CartesianPlane:
     def __init__(self):
         self.x_size, self.y_size = 1000, 1000
-        self.plane = []
-        for _ in range(self.x_size):
-            row =[]
-            self.plane.append([row.append(0) for _ in range(1000)])
-    def __str__(self):
-        return_str = ""
-        for ind,row in enumerate(self.plane):
-            return_str += f'{ind} - {row}\n'
-        return return_str
+        self.plane = {}
+
+    def get_plane(self) -> Dict:
+        """Method returning plane"""
+        print(self.plane)
+        return self.plane
+
     def add_straigh_line(self, line: List[int]) -> None:
+        """Adding lines to cartesian plane"""
+        # Checking if x or y value is changing
         if line[0] == line[2]:
             static_x = line[0]
             static_y = False
@@ -21,7 +22,56 @@ class CartesianPlane:
             static_y = line[1]
             static_x = False
 
-        pass
+        if isinstance(static_x, int) and not static_y:
+            # If x changes and y is static
+            negative = False
+            distance = line[3] - line[1]
+            # if distance is negative - vector directed in x=0 value, activating negative variable
+            if distance < 0:
+                negative = True
+            if negative:
+                for y in range(distance * (-1) + 1):
+                    pos = f'{static_x},{line[1] + y * (-1)}'
+
+                    if pos in self.plane:
+                        self.plane[pos] += 1
+                    else:
+                        self.plane.setdefault(pos, 1)
+            else:
+                for y in range(distance + 1):
+
+                    pos = f'{static_x},{line[1] + y}'
+                    if pos in self.plane:
+                        self.plane[pos] += 1
+                    else:
+                        self.plane.setdefault(pos, 1)
+
+
+
+        elif isinstance(static_y, int) and not static_x:
+            # If y changes and x is static
+            negative = False
+            distance = line[2] - line[0]
+            # if distance is negative - vector directed in y=0 value, activating negative variable
+            if distance < 0:
+                negative = True
+
+            if negative:
+                for x in range(distance * (-1) + 1):
+                    pos = f'{line[0] + x * (-1)},{static_y}'
+                    if pos in self.plane:
+                        self.plane[pos] += 1
+                    else:
+                        self.plane.setdefault(pos, 1)
+            else:
+                for x in range(distance + 1):
+                    pos = f'{line[0] + x},{static_y}'
+                    if pos in self.plane:
+                        self.plane[pos] += 1
+                    else:
+                        self.plane.setdefault(pos, 1)
+        else:
+            raise Exception
 
 
 def straight_lines(lines: List[List[str]]) -> List[List[int]]:
@@ -38,7 +88,7 @@ def straight_lines(lines: List[List[str]]) -> List[List[int]]:
 
 
 def plane_size(lines: List[List[str]]) -> List[int]:
-    # Passed, not used
+    # Passed, not used, typed 1000x1000 plane directly
     rows = []
     cols = []
     for line in lines:
@@ -68,10 +118,18 @@ def load_lines() -> List[List[str]]:
 
 def main() -> None:
     available_lines = load_lines()
-    straight_lines(available_lines)
+    lines = straight_lines(available_lines)
     plane = CartesianPlane()
-    print(plane)
-    # size = plane_size(available_lines)
+    for line in lines:
+        plane.add_straigh_line(line)
+    cartesian_plane= plane.get_plane().values()
+    cartesian_plane = list(cartesian_plane)
+    crosses =0
+    for point in cartesian_plane:
+        if point>=2:
+            crosses+=1
+    print(crosses)
+
     pass
 
 
