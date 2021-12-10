@@ -1,5 +1,4 @@
 from typing import List, Dict
-from math import sqrt
 
 """
 Creator: Przemysław Szewczak
@@ -15,11 +14,10 @@ class CartesianPlane:
 
     def get_plane(self) -> Dict:
         """Method returning plane"""
-        print(self.plane)
         return self.plane
 
     def add_straigh_line(self, line: List[int]) -> None:
-        """Adding lines to cartesian plane"""
+        """Adding straight lines to cartesian plane"""
         # Checking if x or y value is changing
         if line[0] == line[2]:
             static_x = line[0]
@@ -79,6 +77,55 @@ class CartesianPlane:
         else:
             raise Exception
 
+    def add_diagonal_line(self, line: List[int]) -> None:
+        """Adding diagonal lines to cartesian plane"""
+        x_delta = line[2] - line[0]
+        y_delta = line[3] - line[1]
+        if abs(x_delta) != abs(y_delta):
+            raise ValueError
+        """
+        Tangent value determines if this line is increasing y value or decreasing
+        tangent = -1 - decrease
+        tangent = 1 - increase
+        This is abstract if we have x_point2 > x_point2, but i consider tan(alfa) looking from (0,0) point
+        """
+        tangent = int(y_delta / abs(x_delta))
+        if tangent > 0 and x_delta > 0:
+            for vector in range(x_delta + 1):
+                pos = f"{line[0] + vector},{line[1] + vector}"
+                if pos in self.plane:
+                    self.plane[pos] += 1
+                else:
+                    self.plane.setdefault(pos, 1)
+            return None
+
+        elif tangent > 0 and x_delta < 0:
+            for vector in range(abs(x_delta) + 1):
+                pos = f"{line[0] - vector},{line[1] + vector}"
+                if pos in self.plane:
+                    self.plane[pos] += 1
+                else:
+                    self.plane.setdefault(pos, 1)
+            return None
+
+        elif tangent < 0 and x_delta < 0:
+            for vector in range(abs(x_delta) + 1):
+                pos = f"{line[0] - vector},{line[1] - vector}"
+                if pos in self.plane:
+                    self.plane[pos] += 1
+                else:
+                    self.plane.setdefault(pos, 1)
+            return None
+
+        elif tangent < 0 and x_delta > 0:
+            for vector in range(x_delta + 1):
+                pos = f"{line[0] + vector},{line[1] - vector}"
+                if pos in self.plane:
+                    self.plane[pos] += 1
+                else:
+                    self.plane.setdefault(pos, 1)
+            return None
+
 
 def straight_lines(lines: List[List[str]]) -> List[List[int]]:
     # Passed
@@ -93,19 +140,18 @@ def straight_lines(lines: List[List[str]]) -> List[List[int]]:
     return straight_lines_list
 
 
-def plane_size(lines: List[List[str]]) -> List[int]:
-    # Passed, not used, typed 1000x1000 plane directly
-    rows = []
-    cols = []
+def diagonal_lines(lines: List[List[str]]) -> List[List[int]]:
+    # Passed
+    """Returning only diagonal lines"""
+    diagonal_lines_list = []
     for line in lines:
+        # Change to integer type
         line = list(map(lambda x: int(x), line))
-        rows.append(line[0])
-        rows.append(line[2])
-        cols.append(line[1])
-        cols.append(line[3])
-    rows.sort(reverse=True)
-    cols.sort(reverse=True)
-    return [rows[0], cols[0]]
+        # Considering only lines where tangent(alfa) = 1 or -1 where tangent(alfa) = y/x
+        if abs(line[0] - line[2]) == abs(line[1] - line[3]):
+            diagonal_lines_list.append(line)
+
+    return diagonal_lines_list
 
 
 def load_lines() -> List[List[str]]:
@@ -124,10 +170,11 @@ def load_lines() -> List[List[str]]:
 
 def main() -> int:
     available_lines = load_lines()
-    lines = straight_lines(available_lines)
+    s_lines = straight_lines(available_lines)
+    d_lines = diagonal_lines(available_lines)
     plane = CartesianPlane()
-    for line in lines:
-        plane.add_straigh_line(line)
+    [plane.add_straigh_line(line) for line in s_lines]
+    [plane.add_diagonal_line(line) for line in d_lines]
     cartesian_plane = plane.get_plane().values()
     cartesian_plane = list(cartesian_plane)
     crosses = 0
