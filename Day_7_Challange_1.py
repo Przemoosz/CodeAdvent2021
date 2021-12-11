@@ -1,6 +1,14 @@
 from typing import List
 import multiprocessing
 
+"""
+Creator: Przemysław Szewczak
+Date: 11.12.2021
+Source: https://adventofcode.com/2021/day/7
+Note: Multiprocessing is not necessary, it's used because i want to write program using them
+For larger input like millions of points, multiprocessing program will by faster than the not parallel 
+"""
+
 
 def load_data() -> List[int]:
     """Loads data from txt file and change type to integer"""
@@ -11,7 +19,8 @@ def load_data() -> List[int]:
 
 
 def check_point(postion_lists: List[int], queue: multiprocessing.Queue, start: int, end: int) -> List[int]:
-    """Calculating distance between crab position and destiny point(delta x), then summing fuel consumption(|delta x|)"""
+    """Calculating distance between crab position and destiny point(delta x),
+    then summing fuel consumption(|delta x|)"""
     fuel_consuption = []
     for point in range(start, end):
         fuel_to_point = 0
