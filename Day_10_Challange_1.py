@@ -1,6 +1,13 @@
 from typing import List
 
 
+"""
+Creator: Przemysław Szewczak
+Date: 15.12.2021
+Source: https://adventofcode.com/2021/day/10
+"""
+
+
 def load_data() -> List[str]:
     """Function loads data from txt file and saves it to list"""
     with open('day_10_input_1.txt') as file:
