@@ -9,10 +9,13 @@ Source: https://adventofcode.com/2021/day/11
 
 class Octopus:
     blinks = 0
+    zeros = 0
+    steps = 0
 
     def __init__(self, energy: int):
         self.energy_level = energy
         self.blinked = False
+        self.steps = 0
 
     def __str__(self):
         return str(self.energy_level)
@@ -30,6 +33,7 @@ class Octopus:
         elif not self.blinked:
             # Normal case
             self.energy_level += 1
+            self.steps += 1
             return False
 
     def deactivate(self) -> None:
@@ -39,6 +43,21 @@ class Octopus:
     def reset_energy(self) -> None:
         """Reset energy level to 0"""
         self.energy_level = 0
+        Octopus.count_zeros()
+
+    @classmethod
+    def count_zeros(cls) -> None:
+        """Class method which adds one for every 0 on plane"""
+        cls.zeros += 1
+        if cls.zeros == 100:
+            print(f"All zero after step: {cls.steps}")
+
+    @classmethod
+    def reset_counter(cls) -> bool:
+        """Class method to reset counter or to return True while all plane is filed with 0"""
+        if cls.zeros == 100:
+            return True
+        cls.zeros = 0
 
     @classmethod
     def count_blinks(cls) -> None:
@@ -184,9 +203,11 @@ class Plane:
 
 def main() -> None:
     plane = Plane()
-    for _ in range(100):
+    for i in range(1000):
+        Octopus.steps = i + 1
         plane.step()
-    print(Octopus.get_blinks_ammount())
+        if Octopus.reset_counter():
+            break
     pass
 
 
