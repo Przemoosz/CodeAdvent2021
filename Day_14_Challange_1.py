@@ -1,6 +1,12 @@
 from typing import List
 from collections import deque
 
+"""
+Creator: Przemysław Szewczak
+Date: 27.12.2021
+Source: https://adventofcode.com/2021/day/14
+Language: Python 3.9
+"""
 
 class Polymers:
 
